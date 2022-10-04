@@ -12,7 +12,7 @@ import java.io.IOException;
 public class Game {
 
     Screen screen;
-    private Hero hero = new Hero(10, 10);
+    private Hero hero = new Hero(new Position(10, 10));
 
     private void draw() throws IOException{
         screen.clear();
@@ -43,20 +43,24 @@ public class Game {
             e.printStackTrace();
         }
     }
+
+    private void moveHero(Position position) {
+        hero.setPosition(position);
+    }
     private void processKey(KeyStroke key) throws IOException {
 
         switch (key.getKeyType()){
             case ArrowUp:
-                hero.moveUp();
+                moveHero(hero.moveUp());
                 break;
             case ArrowDown:
-                hero.moveDown();
+                moveHero(hero.moveDown());
                 break;
             case ArrowLeft:
-                hero.moveLeft();
+                moveHero(hero.moveLeft());
                 break;
             case ArrowRight:
-                hero.moveRight();
+                moveHero(hero.moveRight());
                 break;
             case Character:
                 if (key.getCharacter() == 'q') screen.close();
