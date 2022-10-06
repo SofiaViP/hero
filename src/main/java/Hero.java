@@ -14,7 +14,7 @@ public class Hero {
     }
 
     public void draw(TextGraphics graphics) throws IOException {
-        graphics.setForegroundColor(TextColor.Factory.fromString("#FFFF33"));
+        graphics.setBackgroundColor(TextColor.Factory.fromString("#336699"));
         graphics.enableModifiers(SGR.BOLD);
         graphics.putString(new TerminalPosition(position.getX(), position.getY()), "X");
 
