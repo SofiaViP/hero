@@ -42,7 +42,10 @@ public class Arena {
     }
 
     private boolean canHeroMove(Position position) {
-        return (position.getX() >= 1 && position.getX() < this.width-1 && position.getY() >= 1 && position.getY() < this.height-1);
+        for (Wall wall: walls){
+            if (wall.getPosition().equals(position)) return false;
+        }
+        return true;
     }
 
     public void processKey(KeyStroke key, Screen screen) throws IOException {
@@ -72,4 +75,5 @@ public class Arena {
             wall.draw(graphics);
         hero.draw(graphics);
     }
+
 }
