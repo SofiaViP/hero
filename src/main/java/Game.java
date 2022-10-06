@@ -35,8 +35,11 @@ public class Game {
             while (true) {
                 draw();
                 KeyStroke key = screen.readInput();
-                processKey(key);
                 if (key.getKeyType() == KeyType.EOF) break;
+                processKey(key);
+                arena.verifyMonsterCollisions(screen);
+                arena.moveMonsters();
+                arena.verifyMonsterCollisions(screen);
             }
 
         } catch (IOException e) {

@@ -17,16 +17,31 @@ public class Arena {
     private List<Wall> walls;
     private List<Coin> coins;
 
-    Hero hero;
+    private List<Monster> monsters = new ArrayList<>();
+
+    private Hero hero;
 
     public Arena(int w, int h) {
+        Random random = new Random();
         this.width = w;
         this.height = h;
         hero = new Hero(new Position(width / 2, height / 2));
+
+        for (int i = 0; i < 5; i++){
+            this.monsters.add(new Monster(new Position(random.nextInt(width - 2) + 1, random.nextInt(height - 2) + 1)));
+        }
         this.walls = createWalls();
         this.coins = createCoins();
     }
 
+    public void verifyMonsterCollisions(Screen screen) throws IOException{
+        for (Monster monster : monsters){
+            if (monster.getPosition().equals(hero.getPosition())) {
+                screen.close();
+                System.out.print("The End");
+            }
+        }
+    }
     private List<Wall> createWalls() {
         List<Wall> walls = new ArrayList<>();
         for (int c = 0; c < width; c++) {
@@ -72,8 +87,33 @@ public class Arena {
         return true;
     }
 
-    public void processKey(KeyStroke key, Screen screen) throws IOException {
+    public void moveMonsters() {
+        Position pos;
+        for (Monster monster : monsters) {
+            while (true) {
+                pos = monster.move();
+                if (canMonsterMove(pos)) {
+                    monster.setPosition(pos);
+                    break;
+                }
+            }
+        }
+    }
 
+    private boolean canMonsterMove(Position position){
+        for (Wall wall : walls) {
+            if (wall.getPosition().equals(position)) return false;
+        }
+        for (Monster monster : monsters) {
+            if (monster.getPosition().equals(position)) return false;
+        }
+        for (Coin coin : coins) {
+            if (coin.getPosition().equals(position)) return false;
+        }
+        return true;
+    }
+
+    public void processKey(KeyStroke key, Screen screen) throws IOException {
         switch (key.getKeyType()) {
             case ArrowUp:
                 moveHero(hero.moveUp());
@@ -99,6 +139,8 @@ public class Arena {
             wall.draw(graphics);
         for (Coin coin : coins)
             coin.draw(graphics);
+        for (Monster monster : monsters)
+            monster.draw(graphics);
         hero.draw(graphics);
     }
 
@@ -113,5 +155,4 @@ public class Arena {
         if (coin2remove != -1) coins.remove(coins.get(coin2remove));
 
     }
-
 }
