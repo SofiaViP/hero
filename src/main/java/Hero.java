@@ -12,6 +12,7 @@ public class Hero extends Element{
         super(position);
     }
 
+    @Override
     public void draw(TextGraphics graphics) throws IOException {
         graphics.setBackgroundColor(TextColor.Factory.fromString("#336699"));
         graphics.enableModifiers(SGR.BOLD);

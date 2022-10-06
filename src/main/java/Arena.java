@@ -8,41 +8,65 @@ import com.googlecode.lanterna.screen.Screen;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Arena {
     private int width;
     private int height;
 
     private List<Wall> walls;
+    private List<Coin> coins;
 
     Hero hero;
 
-    public Arena(int w, int h){
+    public Arena(int w, int h) {
         this.width = w;
         this.height = h;
-        hero = new Hero(new Position(width/2, height/2));
+        hero = new Hero(new Position(width / 2, height / 2));
         this.walls = createWalls();
+        this.coins = createCoins();
     }
 
-    private List<Wall> createWalls(){
+    private List<Wall> createWalls() {
         List<Wall> walls = new ArrayList<>();
-        for (int c=0; c<width; c++){
+        for (int c = 0; c < width; c++) {
             walls.add(new Wall(new Position(c, 0)));
             walls.add(new Wall(new Position(c, height - 1)));
         }
-        for (int r=1; r<height-1; r++){
+        for (int r = 1; r < height - 1; r++) {
             walls.add(new Wall(new Position(0, r)));
             walls.add(new Wall(new Position(width - 1, r)));
         }
         return walls;
     }
+
+    private List<Coin> createCoins() {
+        Random random = new Random();
+        ArrayList<Coin> coins = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            Position pos = new Position(random.nextInt(width - 2) + 1, random.nextInt(height - 2) + 1);
+            boolean val = true;
+            for (int j = 0; j < i; j++) {
+                if (coins.get(j).getPosition().equals(pos) || hero.getPosition().equals(pos)) {
+                    val = false;
+                    break;
+                }
+            }
+            if (val) coins.add(new Coin(pos));
+            else i--;
+        }
+        return coins;
+    }
+
     public void moveHero(Position position) {
-        if (canHeroMove(position))
+        if (canHeroMove(position)) {
             hero.setPosition(position);
+            retrieveCoins();
+        }
     }
 
     private boolean canHeroMove(Position position) {
-        for (Wall wall: walls){
+        for (Wall wall : walls) {
             if (wall.getPosition().equals(position)) return false;
         }
         return true;
@@ -70,10 +94,24 @@ public class Arena {
 
     public void draw(TextGraphics graphics) throws IOException {
         graphics.setBackgroundColor(TextColor.Factory.fromString("#336699"));
-        graphics.fillRectangle(new TerminalPosition(0, 0), new TerminalSize(width*2, height*2), ' ');
-        for (Wall wall: walls)
+        graphics.fillRectangle(new TerminalPosition(0, 0), new TerminalSize(width * 2, height * 2), ' ');
+        for (Wall wall : walls)
             wall.draw(graphics);
+        for (Coin coin : coins)
+            coin.draw(graphics);
         hero.draw(graphics);
+    }
+
+    public void retrieveCoins() {
+        int coin2remove = -1;
+        for (int i = 0; i < coins.size(); i++) {
+            if (hero.getPosition().equals(coins.get(i).getPosition())) {
+                coin2remove = i;
+                break;
+            }
+        }
+        if (coin2remove != -1) coins.remove(coins.get(coin2remove));
+
     }
 
 }

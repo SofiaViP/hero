@@ -11,6 +11,5 @@ public abstract class Element {
     public Position getPosition() {
         return position;
     }
-
     public abstract void draw(TextGraphics textGraphics) throws IOException;
 }
