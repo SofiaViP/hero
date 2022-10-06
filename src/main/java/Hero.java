@@ -6,11 +6,10 @@ import com.googlecode.lanterna.graphics.TextGraphics;
 
 import java.io.IOException;
 
-public class Hero {
+public class Hero extends Element{
 
-    private Position position;
     public Hero(Position position) {
-        this.position = position;
+        super(position);
     }
 
     public void draw(TextGraphics graphics) throws IOException {
@@ -39,10 +38,6 @@ public class Hero {
 
     public Position moveRight(){
         return new Position(position.getX() + 1, position.getY());
-    }
-
-    public Position getPosition() {
-        return position;
     }
 
     public void setPosition(Position position) {
